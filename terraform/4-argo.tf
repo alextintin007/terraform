@@ -8,7 +8,7 @@ resource "kubernetes_namespace" "namespace1" {
 data "kubectl_file_documents" "manifests" {
   content = file("${path.module}/argo.yaml")
 }
-// error
+
 resource "kubectl_manifest" "argo" {
   count              = length(data.kubectl_file_documents.manifests.documents)
   yaml_body          = element(data.kubectl_file_documents.manifests.documents, count.index)
@@ -119,7 +119,7 @@ resource "kubernetes_secret" "argo_server_sso" {
     }
   }
 }
-// error
+
 resource "kubernetes_service" "argo_server" {
   metadata {
     namespace = kubernetes_namespace.namespace1.metadata.0.name
@@ -142,7 +142,7 @@ resource "kubernetes_service" "argo_server" {
     google_container_node_pool.npool1
   ]
 }
-// error
+
 resource "kubernetes_deployment" "argo_server" {
   metadata {
     namespace = kubernetes_namespace.namespace1.metadata.0.name
