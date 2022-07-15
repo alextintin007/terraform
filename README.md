@@ -28,7 +28,7 @@ terraform apply
 terraform destroy
 ```
 ## Notes
-There are still updates to be made, pv-pod is yet to be implemented, argo is already installed but to submit worksflows you must first:
+Argo is already installed but to submit worksflows you must first:
 ```sh
 # Download the binary
 curl -sLO https://github.com/argoproj/argo/releases/download/v2.11.1/argo-linux-amd64.gz
