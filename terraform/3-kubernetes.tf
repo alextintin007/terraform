@@ -38,7 +38,6 @@ resource "kubernetes_deployment" "http_fileserver" {
         }
         volume {
           name = "basic-config"
-
           config_map {
             name = "basic-config"
           }
@@ -68,6 +67,9 @@ resource "kubernetes_deployment" "http_fileserver" {
       }
     }
   }
+  depends_on = [
+    google_container_node_pool.npool1
+  ]
 }
 
 resource "kubernetes_service" "http_fileserver" {
@@ -92,6 +94,9 @@ resource "kubernetes_service" "http_fileserver" {
     session_affinity        = "None"
     external_traffic_policy = "Cluster"
   }
+  depends_on = [
+    google_container_node_pool.npool1
+  ]
 }
 
 resource "kubernetes_cluster_role_binding" "rb" {
