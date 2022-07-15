@@ -8,10 +8,14 @@ resource "kubernetes_namespace" "namespace1" {
 data "kubectl_file_documents" "manifests" {
   content = file("${path.module}/argo.yaml")
 }
+// error
 resource "kubectl_manifest" "argo" {
   count              = length(data.kubectl_file_documents.manifests.documents)
   yaml_body          = element(data.kubectl_file_documents.manifests.documents, count.index)
   override_namespace = kubernetes_namespace.namespace1.metadata.0.name
+  depends_on = [
+    google_container_node_pool.npool1
+  ]
 }
 
 // argo modifications  (changed: names, LoadBalancers, namespaces )
@@ -20,6 +24,9 @@ resource "kubernetes_service_account" "argo_server" {
     namespace = kubernetes_namespace.namespace1.metadata.0.name
     name      = "argo-server-${var.name}"
   }
+  depends_on = [
+    google_container_node_pool.npool1
+  ]
 }
 
 resource "kubernetes_role" "argo_server_role" {
@@ -112,7 +119,7 @@ resource "kubernetes_secret" "argo_server_sso" {
     }
   }
 }
-
+// error
 resource "kubernetes_service" "argo_server" {
   metadata {
     namespace = kubernetes_namespace.namespace1.metadata.0.name
@@ -131,8 +138,11 @@ resource "kubernetes_service" "argo_server" {
     session_affinity        = "None"
     external_traffic_policy = "Cluster"
   }
+  depends_on = [
+    google_container_node_pool.npool1
+  ]
 }
-
+// error
 resource "kubernetes_deployment" "argo_server" {
   metadata {
     namespace = kubernetes_namespace.namespace1.metadata.0.name
@@ -192,6 +202,9 @@ resource "kubernetes_deployment" "argo_server" {
       }
     }
   }
+  depends_on = [
+    google_container_node_pool.npool1
+  ]
 }
 
 resource "kubernetes_config_map" "artifact_repositories" {
@@ -259,6 +272,9 @@ resource "kubernetes_service" "minio" {
       app = "minio-${var.name}"
     }
   }
+  depends_on = [
+    google_container_node_pool.npool1
+  ]
 }
 
 resource "kubernetes_deployment" "minio" {
@@ -326,4 +342,7 @@ resource "kubernetes_deployment" "minio" {
       }
     }
   }
+  depends_on = [
+    google_container_node_pool.npool1
+  ]
 }
