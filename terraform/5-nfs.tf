@@ -52,6 +52,9 @@ resource "kubernetes_deployment" "nfs_server" {
       }
     }
   }
+  depends_on = [
+    google_container_node_pool.npool1
+  ]
 }
 
 //  002-nfs-server-service
@@ -77,6 +80,9 @@ resource "kubernetes_service" "nfs_server" {
       role = "nfs-server-${var.name}"
     }
   }
+  depends_on = [
+    google_container_node_pool.npool1
+  ]
 }
 
 //  003-pv-pvc
@@ -99,7 +105,7 @@ resource "kubernetes_persistent_volume" "nfs_pv" {
   }
 }
 
-//  Persistent volume claim
+//  003-pv
 resource "kubernetes_persistent_volume_claim" "nfs_pvc" {
   metadata {
     name      = "nfs-${var.name}"
