@@ -123,30 +123,30 @@ resource "kubernetes_persistent_volume_claim" "nfs_pvc" {
   }
 }
 
-//  pv-pod
-resource "kubernetes_pod" "pv_pod" {
-  metadata {
-    name      = "pv-pod"
-    namespace = kubernetes_namespace.namespace1.metadata.0.name
-  }
-  spec {
-    volume {
-      name = "task-pv-storage"
-      persistent_volume_claim {
-        claim_name = "nfs-${var.name}"
-      }
-    }
-    container {
-      name    = "pv-container"
-      image   = "busybox"
-      command = ["tail", "-f", "/dev/null"]
-      volume_mount {
-        name       = "task-pv-storage"
-        mount_path = "/mnt/data"
-      }
-    }
-  }
-  depends_on = [
-    google_container_node_pool.npool1
-  ]
-}
+//  pv-pod creates successfully but does not delete 
+// resource "kubernetes_pod" "pv_pod" {
+//  metadata {
+//    name      = "pv-pod"
+//    namespace = kubernetes_namespace.namespace1.metadata.0.name
+//  }
+//  spec {
+//    volume {
+//      name = "task-pv-storage"
+//      persistent_volume_claim {
+//        claim_name = "nfs-${var.name}"
+//      }
+//    }
+//    container {
+//      name    = "pv-container"
+//      image   = "busybox"
+//      command = ["tail", "-f", "/dev/null"]
+//      volume_mount {
+//        name       = "task-pv-storage"
+//        mount_path = "/mnt/data"
+//      }
+//    }
+//  }
+//  depends_on = [
+//    google_container_node_pool.npool1
+//  ]
+// }
